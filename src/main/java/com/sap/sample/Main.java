@@ -26,12 +26,24 @@ public class Main {
         JmsTemplate template = context.getBean(JmsTemplate.class);;
         for (int i = 0; i < messageCount; i++) {
             final int index = i;
-            final String text = "Message number is " + i + ".";
+            //FOR Java 8 Lemda Expressions
             template.send((session -> {Order order = new Order();
                 order.setOrderId(index);
                 ObjectMessage message = session.createObjectMessage(order);
                 return message;} ));
 
+
+            //FOR Java 7 and Below
+           /* template.send(new MessageCreator() {
+                @Override
+                public Message createMessage(Session session) throws JMSException {
+                    Order order = new Order();
+                    order.setOrderId(index);
+                    ObjectMessage message = session.createObjectMessage(order);
+                    return message;
+                }
+            });
+*/
 
 
         }
