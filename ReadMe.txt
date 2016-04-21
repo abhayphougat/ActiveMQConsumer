@@ -5,9 +5,9 @@ To build this project use
 
     mvn install
 
-To run this project with Maven use
+To run this project
 
-    mvn camel:run
+    Start the Main.java
 
 For more help see the Apache Camel documentation
 

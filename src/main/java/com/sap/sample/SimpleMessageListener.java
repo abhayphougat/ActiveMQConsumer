@@ -11,10 +11,7 @@ public class SimpleMessageListener implements MessageListener{
     @Override
     public void onMessage(Message message) {
 
-        //TODO Please put your code here to create orders by Calling orderfacade.xcreateOrder
-        String property = System.getProperty("JMSPorcessingOngoing");
-
-        System.out.println("Every Message Response : "+property);
+        //TODO Please put your code here to create orders by Calling orderfacade.createOrder
         System.out.println(message);
     }
 }
