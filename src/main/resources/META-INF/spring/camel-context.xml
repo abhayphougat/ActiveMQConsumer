@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd
+http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+
+  <amq:broker id="broker" useJmx="false" persistent="false">
+    <amq:transportConnectors>
+      <amq:transportConnector uri="tcp://localhost:0" />
+    </amq:transportConnectors>
+  </amq:broker>
+  <amq:queue id="destination" physicalName="TEST.FOO" />
+
+
+  <amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost?broker.persistent=false" />
+
+  <!-- JMS Producer Configuration -->
+  <bean id="jmsProducerConnectionFactory"
+        class="org.springframework.jms.connection.SingleConnectionFactory"
+        depends-on="broker"
+        p:targetConnectionFactory-ref="jmsFactory" />
+
+  <bean id="jmsProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+        p:connectionFactory-ref="jmsProducerConnectionFactory"
+        p:defaultDestination-ref="destination" />
+
+  <!-- A JMS connection factory for ActiveMQ -->
+
+  <!--<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"  p:brokerURL="vm://localhost" />-->
+
+
+
+  <!-- A POJO that implements the JMS message listener -->
+  <bean id="simpleMessageListener" class="com.sap.sample.SimpleMessageListener"/>
+
+  <bean id="jmsConsumerConnectionFactory"
+        class="org.springframework.jms.connection.SingleConnectionFactory"
+        depends-on="broker"
+        p:targetConnectionFactory-ref="jmsFactory" />
+  <!-- The Spring message listener container configuration -->
+  <jms:listener-container
+          container-class="com.sap.sample.OrderQueueMessageListenerContainer"
+          connection-factory="jmsConsumerConnectionFactory"
+          task-executor="listnererTaskExecuter"
+          acknowledge="auto">
+    <jms:listener destination="TEST.FOO" ref="simpleMessageListener" method="onMessage" />
+
+  </jms:listener-container>
+
+  <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" id="listnererTaskExecuter">
+    <property name="corePoolSize" value="100"/>
+    <property name="maxPoolSize" value="150"/>
+  </bean>
+
+</beans>
