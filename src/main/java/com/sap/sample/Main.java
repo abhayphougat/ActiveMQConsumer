@@ -27,14 +27,11 @@ public class Main {
         for (int i = 0; i < messageCount; i++) {
             final int index = i;
             final String text = "Message number is " + i + ".";
-
             template.send(new MessageCreator() {
                 public Message createMessage(Session session) throws JMSException {
-                    TextMessage message = session.createTextMessage(text);
-                    message.setIntProperty(MESSAGE_COUNT, index);
-
-                    System.out.println("Sending message: " + text);
-
+                    Order order = new Order();
+                    order.setOrderId(index);
+                    ObjectMessage message = session.createObjectMessage(order);
                     return message;
                 }
             });
