@@ -1,4 +1,4 @@
-Camel Router Spring Project
+AMQ Spring Project
 ===========================
 
 To build this project use
@@ -9,7 +9,4 @@ To run this project
 
     Start the Main.java
 
-For more help see the Apache Camel documentation
-
-    http://camel.apache.org/
 
