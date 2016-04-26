@@ -17,6 +17,7 @@ public class SimpleMessageListener implements MessageListener{
         Order order = null;
         try {
             order = (Order)(((ObjectMessage)message).getObject());
+            System.out.println("Order Received : "+order.getOrderId());
             //TODO Please put your code here to create orders by Calling orderfacade.createOrder(order)
         } catch (JMSException e) {
             e.printStackTrace();
